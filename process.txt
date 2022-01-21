@@ -7,11 +7,11 @@ docker build -t test:pandas .
 
 # ******to run postgres in docker
 docker run -it \
-  -e POSTGRES_USER="root" \
-  -e POSTGRES_PASSWORD="root" \
-  -e POSTGRES_DB="ny_taxi" \
-  -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
-  -p 5432:5432 \
+-e POSTGRES_USER="root" \
+-e POSTGRES_PASSWORD="root" \
+-e POSTGRES_DB="ny_taxi" \
+-v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
+-p 5432:5432 \
 postgres:13
 
 # ******to run postgres in cli and start the pg database to write sql queries
@@ -26,34 +26,42 @@ docker run -it -e "PGADMIN_DEFAULT_EMAIL=admin@admin.com" -e "PGADMIN_DEFAULT_PA
 docker network create pg-network
 
 docker run -it \
-  -e POSTGRES_USER="root" \
-  -e POSTGRES_PASSWORD="root" \
-  -e POSTGRES_DB="ny_taxi" \
-  -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
-  -p 5432:5432 \
-  --network=pg-network \
-  --name pg-database \
+-e POSTGRES_USER="root" \
+-e POSTGRES_PASSWORD="root" \
+-e POSTGRES_DB="ny_taxi" \
+-v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
+-p 5432:5432 \
+--network=pg-network \
+--name pg-database \
 postgres:13
 
 docker run -it -e "PGADMIN_DEFAULT_EMAIL=admin@admin.com" -e "PGADMIN_DEFAULT_PASSWORD=root" -p 5050:80 --network=pg-network \
-  --name pgadmin dpage/pgadmin4
+--name pgadmin dpage/pgadmin4
 
-  # to remove already created container in docker
+# to remove already created container in docker
 
-  docker ps -a
+docker ps -a
 
-  docker rm cranky_goldstine
+docker rm cranky_goldstine
 
-  # to link the database container to the pgadmin container
-  set name as preferred (Docker Localhost)
-  Go to connections (Set name as name of database (pg-database, username=root, password=root)) and save.
+# to link the database container to the pgadmin container
+set name as preferred (Docker Localhost)
+Go to connections (Set name as name of host as pg-database, username=root, password=root) and save.
 
 
-  # convert jupyter notebook file to script
-  jupyter nbconvert --to=script Import-Data.ipynb
+# convert jupyter notebook file to script
+jupyter nbconvert --to=script Import-Data.ipynb
 
-  # add it to a docker compose file
-  URL="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+# *******add it to a docker compose file
+URL="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
 
-  python ingest_data.py --username=root --password=root --host=localhost --port=5432 \
-   --db_name=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
+# arg parameters to run the script
+python ingest_data.py --username=root --password=root --host=localhost --port=5432 \
+--db_name=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
+
+# ******edit the docker file to dockerize the pipeline (v001 = version 1)
+docker build -t taxi_ingest_data:v002 .
+
+# to run the docker file
+URL="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+docker run -it --network=pg-network taxi_ingest_data:v002 --username=root --password=root --host=pg-database --port=5432 --db_name=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
