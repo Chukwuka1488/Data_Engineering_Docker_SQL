@@ -2,12 +2,14 @@
 
 yellow_tripdata_2021-01.csv
 yellow_head_taxi.csv
+output.csv
 
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
 
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
+.idea
 
 # IPython
 profile_default/

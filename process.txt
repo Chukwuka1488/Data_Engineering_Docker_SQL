@@ -1,11 +1,11 @@
-# to run python in docker
+# *******to run python in docker
 docker run -it python:3.9
 
-# to build and execute a dockerfile in this directory to build the python image with pandas
+# *******to build and execute a dockerfile in this directory to build the python image with pandas
 docker build -t test:pandas .
 
 
-# to run postgres in docker
+# ******to run postgres in docker
 docker run -it \
   -e POSTGRES_USER="root" \
   -e POSTGRES_PASSWORD="root" \
@@ -14,14 +14,13 @@ docker run -it \
   -p 5432:5432 \
 postgres:13
 
-# to run postgres in cli
+# ******to run postgres in cli and start the pg database to write sql queries
 pgcli -h localhost -p 5432 -u root -d ny_taxi
 
-
-# get pgadmin using docker
+# *******get pgadmin using docker
 docker run -it -e "PGADMIN_DEFAULT_EMAIL=admin@admin.com" -e "PGADMIN_DEFAULT_PASSWORD=root" -p 5050:80 dpage/pgadmin4
 
-# we need to connect the pgadmin to the pg database created by putting the 2 containers into the same network connection 
+# ******we need to connect the pgadmin to the pg database created by putting the 2 containers into the same network connection
 # stop all running docker container first
 
 docker network create pg-network
@@ -35,3 +34,26 @@ docker run -it \
   --network=pg-network \
   --name pg-database \
 postgres:13
+
+docker run -it -e "PGADMIN_DEFAULT_EMAIL=admin@admin.com" -e "PGADMIN_DEFAULT_PASSWORD=root" -p 5050:80 --network=pg-network \
+  --name pgadmin dpage/pgadmin4
+
+  # to remove already created container in docker
+
+  docker ps -a
+
+  docker rm cranky_goldstine
+
+  # to link the database container to the pgadmin container
+  set name as preferred (Docker Localhost)
+  Go to connections (Set name as name of database (pg-database, username=root, password=root)) and save.
+
+
+  # convert jupyter notebook file to script
+  jupyter nbconvert --to=script Import-Data.ipynb
+
+  # add it to a docker compose file
+  URL="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.csv"
+
+  python ingest_data.py --username=root --password=root --host=localhost --port=5432 \
+   --db_name=ny_taxi --table_name=yellow_taxi_trips --url=${URL}
