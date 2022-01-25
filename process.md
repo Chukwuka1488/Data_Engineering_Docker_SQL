@@ -171,3 +171,73 @@ Install remote ssh extension on VSCode
 Select the remote ssh available
 Clone the Repository from github
 
+docker-compose up -d to pull the docker images created (pgdatabase & pgadmin)
+
+cd ..
+
+conda install -c conda-forge pgcli
+
+pip install -U mycli
+
+pgcli -h localhost -U root -d ny_taxi
+
+# Connecting the port of the postgres running in the VM to our local machine to interact with it 
+On the terminal opn VScode -> PORTS -> Forward Ports -> add 5432 (connect VM cloud database to local database)
+On the terminal opn VScode -> PORTS -> Forward Ports -> add 5050 (connect VM cloud pgadmin to login pgadmin on browser)
+Go to local terminal
+➜  ~ git:(main) ✗ pgcli -h localhost -U root -d ny_taxi
+
+
+# Load the data into the database using the import-data.ipynb script
+- Open jupyter notebook from terminal
+- Run the scripts
+- Check if data is stored in the database
+-
+
+# Install terraform in VM
+- Go to terraform dowload page
+- Get the Amd linux link (https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip)
+- cd into bin directory where the docker-compose was installed
+- wget https://releases.hashicorp.com/terraform/1.1.4/terraform_1.1.4_linux_amd64.zip
+- sudo apt-get install unzip
+- unzip the dowloaded file
+- cd into terraform folder
+- We need to import the json file (google credentials)
+-
+➜  ~ git:(main) ✗ mkdir .gc
+➜  ~ git:(main) ✗ ls
+Applications         Downloads            Library              Pictures             Zotero               logs
+Desktop              IdeaProjects         Movies               Postman Agent        google-cloud-sdk     openjdk.jdk
+Documents            Jupyter Python Files Music                Public               learn-terraform-gcp  spark
+➜  ~ git:(main) ✗ cd .gc
+➜  .gc git:(main) ✗ cd ..
+➜  ~ git:(main) ✗ cd Desktop
+➜  Desktop git:(main) ✗ cp dtc-de-course-338518-d44b189574e3.json ~/.gc
+➜  .gc git:(main) ✗ sftp de-zoomcamp
+Connected to de-zoomcamp.
+sftp> ls
+Anaconda3-2021.11-Linux-x86_64.sh           Data_Engineering_Docker_SQL                 anaconda3
+bin                                         snap
+sftp> mkdir .gc
+Couldn't create directory: Failure
+sftp> mkdir gc
+sftp> ls
+sftp> cd gc
+sftp> ls
+sftp> put dtc-de-course-338518-d44b189574e3.json
+Uploading dtc-de-course-338518-d44b189574e3.json to /home/haykayGCP/gc/dtc-de-course-338518-d44b189574e3.json
+dtc-de-course-338518-d44b189574e3.json                                                             100% 2365     9.8KB/s   00:00
+sftp> ls
+dtc-de-course-338518-d44b189574e3.json
+
+- Authenticate the google cloud project
+(base) haykayGCP@de-zoomcamp:~/gc$ cd ..
+(base) haykayGCP@de-zoomcamp:~$ cd Data_Engineering_Docker_SQL/terraform_gcp/
+(base) haykayGCP@de-zoomcamp:~/Data_Engineering_Docker_SQL/terraform_gcp$ export GOOGLE_APPLICATION_CREDENTIALS=~/gc/dtc-de-course-338518-d44b189574e3.json
+# Activated service account credentials for: [data-engineering-zoomcamp@dtc-de-course-338518.iam.gserviceaccount.com]
+(base) haykayGCP@de-zoomcamp:~/Data_Engineering_Docker_SQL/terraform_gcp$ gcloud auth activate-service-account --key-file $GOOGLE_APPLICATION_CREDENTIALS
+
+# Terraform process
+(base) haykayGCP@de-zoomcamp:~/Data_Engineering_Docker_SQL/terraform_gcp$ terraform init
+(base) haykayGCP@de-zoomcamp:~/Data_Engineering_Docker_SQL/terraform_gcp$ terraform plan
+(base) haykayGCP@de-zoomcamp:~/Data_Engineering_Docker_SQL/terraform_gcp$ terraform apply

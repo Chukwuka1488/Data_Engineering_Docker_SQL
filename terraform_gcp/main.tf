@@ -10,11 +10,10 @@ terraform {
 }
 
 provider "google" {
-  credentials = file("/Users/haykay14/Desktop/dtc-de-course-338518-d44b189574e3.json")
+ // credentials = file("/Users/haykay14/Desktop/dtc-de-course-338518-d44b189574e3.json")
 
   project = var.project
   region  = var.region
-  #  zone = "us-east-1"
   // credentials = file(var.credentials)  # Use this if you do not want to set env-var GOOGLE_APPLICATION_CREDENTIALS
 }
 
