@@ -143,11 +143,31 @@ Host de-zoomcamp (Name of VM)
 (To login to the gcp VM)
 ➜  ~ git:(main) ✗ ssh de-zoomcamp}
 
-# Download Docker
+{# Download Docker
 sudo apt-get update
 sudo apt-get install docker.io
+Try docker hello-world (Permissions denied)
+https://github.com/sindresorhus/guides/blob/main/docker-without-sudo.md
+sudo groupadd docker
+sudo gpasswd -a $USER docker
+sudo service docker restart
+Logout and Log in to activate
+
+# Install docker-compose
+https://github.com/docker/compose/releases
+(base) haykayGCP@de-zoomcamp:~$ mkdir bin
+(base) haykayGCP@de-zoomcamp:~$ cd bin/
+(base) haykayGCP@de-zoomcamp:~/bin$ wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -O docker-compose
+(base) haykayGCP@de-zoomcamp:~/bin$ chmod +x docker-compose (this makes the docker compose executable)
+cd ..
+vi .bashrc (Add this variable to use the docker compose)
+export PATH="${HOME}/bin:${PATH}"
+
+(base) haykayGCP@de-zoomcamp:~$ source .bashrc ( To logout and login to activate the changes)
+}
 
 # Download VSCode
 Install remote ssh extension on VSCode
 Select the remote ssh available
 Clone the Repository from github
+
